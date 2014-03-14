@@ -5,7 +5,7 @@ import org.vaadin.addon.cdimvp.AbstractMVPView;
 import org.vaadin.addon.cdimvp.MVPView;
 
 public interface MainView extends MVPView {
-    void addNewSubView(AbstractMVPView component);
+    void addNewSubView();
 
     void removeSubView(AbstractMVPView component);
 }

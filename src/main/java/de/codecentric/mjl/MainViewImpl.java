@@ -10,6 +10,9 @@ import org.vaadin.addon.cdimvp.ViewComponent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 import java.util.logging.Logger;
 
 @CDIView
@@ -17,6 +20,14 @@ public class MainViewImpl extends AbstractMVPView implements MainView {
     private static final Logger LOGGER = Logger.getLogger(MainViewImpl.class.getName());
 
     private final HorizontalLayout layout;
+
+    @Inject
+    @New
+    private MainPresenter presenter;
+
+     @Inject
+     @New
+     private Instance<TestViewImpl> testViews;
 
     public MainViewImpl() {
         super();
@@ -33,9 +44,10 @@ public class MainViewImpl extends AbstractMVPView implements MainView {
     }
 
     @Override
-    public void addNewSubView(AbstractMVPView component) {
-        layout.addComponent(component);
-        component.enter();
+    public void addNewSubView() {
+        TestViewImpl newView = testViews.get();
+        layout.addComponent(newView);
+        newView.enter();
     }
 
     @Override
@@ -44,7 +56,8 @@ public class MainViewImpl extends AbstractMVPView implements MainView {
     }
 
     @PostConstruct
-    public void logPostConstruct() {
+    public void attachToPresenter() {
+        presenter.attachToView(this);
         LOGGER.info(this.toString() + " " + "POSTCONSTRUCT");
     }
 

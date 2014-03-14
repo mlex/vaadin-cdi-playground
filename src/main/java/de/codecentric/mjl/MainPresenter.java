@@ -8,14 +8,15 @@ import org.vaadin.addon.cdimvp.ParameterDTO;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import java.util.logging.Logger;
 
-@AbstractMVPPresenter.ViewInterface(MainView.class)
-public class MainPresenter extends AbstractMVPPresenter<MainView> {
+@Dependent
+public class MainPresenter {
 
     private static final Logger LOGGER = Logger.getLogger(MainPresenter.class.getName());
 
@@ -23,20 +24,18 @@ public class MainPresenter extends AbstractMVPPresenter<MainView> {
 
     public static final String REMOVE_VIEW = "REMOVE_VIEW";
 
-    @Inject
-    private Instance<TestViewImpl> testViews;
+    private MainView view;
 
     public void addView(@Observes @CDIEvent(ADD_VIEW) ParameterDTO parameter) {
-        view.addNewSubView(testViews.get());
+        view.addNewSubView();
     }
 
     public void removeView(@Observes @CDIEvent(REMOVE_VIEW) ParameterDTO parameter) {
         view.removeSubView((AbstractMVPView) parameter.getPrimaryParameter());
     }
 
-    @Override
-    public void viewEntered() {
-        LOGGER.info(this.toString() + " " + "VIEW_ENTERED");
+    public void attachToView(MainView view) {
+        this.view = view;
     }
 
     @PostConstruct

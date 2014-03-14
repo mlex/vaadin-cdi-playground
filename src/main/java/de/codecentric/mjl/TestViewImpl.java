@@ -8,6 +8,8 @@ import org.vaadin.addon.cdimvp.AbstractMVPView;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
 import java.util.logging.Logger;
 
 @CDIView
@@ -15,6 +17,10 @@ public class TestViewImpl extends AbstractMVPView implements TestView {
     private static final Logger LOGGER = Logger.getLogger(TestViewImpl.class.getName());
 
     private Label label;
+
+    @Inject
+    @New
+    private TestPresenter presenter;
 
     public TestViewImpl() {
         super();
@@ -51,7 +57,8 @@ public class TestViewImpl extends AbstractMVPView implements TestView {
     }
 
     @PostConstruct
-    public void logPostConstruct() {
+    public void attachToPresenter() {
+        presenter.attachToView(this);
         LOGGER.info(this.toString() + " " + "POSTCONSTRUCT");
     }
 

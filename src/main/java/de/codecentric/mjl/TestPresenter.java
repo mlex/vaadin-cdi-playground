@@ -6,25 +6,28 @@ import org.vaadin.addon.cdimvp.ParameterDTO;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-@AbstractMVPPresenter.ViewInterface(TestView.class)
-public class TestPresenter extends AbstractMVPPresenter<TestView> {
+@Dependent
+public class TestPresenter {
     private static final Logger LOGGER = Logger.getLogger(TestPresenter.class.getName());
 
     public static final String INCREMENT = "INCREMENT";
 
     private AtomicInteger value = new AtomicInteger(0);
 
+    private TestView view;
+
     public void increment(@Observes @CDIEvent(INCREMENT) ParameterDTO dto) {
         int newValue = value.incrementAndGet();
         view.setValue(String.valueOf(newValue));
     }
 
-    @Override
-    public void viewEntered() {
+    public void attachToView(TestView view) {
+        this.view = view;
         LOGGER.info(this.toString() + " " + "VIEW_ENTERED");
     }
 
